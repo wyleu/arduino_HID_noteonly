@@ -40,21 +40,19 @@ const MIDIAddress MIDIAddress8 = {note(A, 0), Channel_Current};   //Note 45
 //  1,            // optional multiplier if the control isn't fast enough
 //};
 
-NoteButton button00 = {
+Button button00 = {
   0,                       // Encoder on pin 0
-  MIDIAddress0, // 
 };
 
-NoteButton button01 = {
+Button button01 = {
   1,                       // Encoder on pin 1
-  MIDIAddress1, // 
 };
 NoteButton button03 = {
-  3,                       // Encoder on pin 0
+  3,                       // Encoder on pin 3
   MIDIAddress0, // 
 };
 NoteButton button04 = {
-  4,                       // Encoder on pin 1
+  4,                       // Encoder on pin 4
   MIDIAddress1, // 
 };
 NoteButton button11 = {
@@ -80,7 +78,7 @@ NoteButton button08 = {
 
 
 NoteButton button02 = {
-  2,                       // Push button on pin 3
+  2,                       // Push button on pin 2
   MIDIAddress1, // 
 };
 NoteButton button05 = {
@@ -115,12 +113,23 @@ NoteButton frontbutton4 = {
   MIDIAddress8, 
 };
 
-
+// MIDI address of the note to send
+const MIDIAddress noteAddress = {note(C, 4), CHANNEL_1};
+// The velocity of the note events
+const uint8_t velocity = 0x7F;
 
 void setup() {
-
-  Control_Surface.begin(); // Initialize Control Surface
+  //Control_Surface.begin(); // Initialize Control Surface
+  midi.begin();
 }
 void loop() {
-  Control_Surface.loop(); // Update the Control Surface
+  //Control_Surface.loop(); // Update the Control Surface
+  midi.update();
+
+  button00.update();
+  if (button00.getState() == Button::Falling)
+     midi.sendNoteOn(noteAddress, velocity);
+  else if (button00.getState() == Button::Rising) // if the button is released
+    midi.sendNoteOff(noteAddress, velocity);
+     
 }
