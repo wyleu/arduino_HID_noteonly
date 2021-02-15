@@ -7,12 +7,11 @@ using namespace MIDI_Notes;
 
 const Channel Channel_Current = CHANNEL_6;
 
-const MIDIAddress MIDIAddress0 = {note(Db,0),  Channel_Current};   //Note 37
+const MIDIAddress MIDIAddress0 = {note(Db,0),  Channel_Current};  //Note 37
 const MIDIAddress MIDIAddress1 = {note(D, 0), Channel_Current};   //Note 38
 const MIDIAddress MIDIAddress2 = {note(Eb,0), Channel_Current};   //Note 39
 const MIDIAddress MIDIAddress3 = {note(E, 0), Channel_Current};   //Note 40 
 const MIDIAddress MIDIAddress4 = {note(Eb,0), Channel_Current};   //Note 51
-
 const MIDIAddress MIDIAddress5 = {note(Gb,0), Channel_Current};   //Note 42
 const MIDIAddress MIDIAddress6 = {note(G, 0), Channel_Current};   //Note 43
 const MIDIAddress MIDIAddress7 = {note(Ab,0), Channel_Current};   //Note 44 
@@ -127,9 +126,19 @@ void loop() {
   midi.update();
 
   button00.update();
+  button01.update();
   if (button00.getState() == Button::Falling)
-     midi.sendNoteOn(noteAddress, velocity);
+     if (button01.getState() == Button::Pressed)
+         midi.sendNoteOn(MIDIAddress1, velocity);
+     else if (button01.getState() == Button::Released)
+         midi.sendNoteOn(MIDIAddress2, velocity);
+     
   else if (button00.getState() == Button::Rising) // if the button is released
-    midi.sendNoteOff(noteAddress, velocity);
+     if (button01.getState() == Button::Pressed)
+         midi.sendNoteOn(MIDIAddress3, velocity);
+     else if (button01.getState() == Button::Released)
+         midi.sendNoteOn(MIDIAddress4, velocity);
+  
+
      
 }
